@@ -98,13 +98,18 @@ while(itr.hasNext()) {
 > <p>ArrayList는 배열처럼 인덱스로 객체를 관리하지만 크기를 동적으로 늘릴 수 있다. 객체의 조회가 잦을 경우 유리하다. </p>
 
 > <h4>Vector</h4>
-> <p>Vector는 ArrayList와 구조적으로 동일하나 동기화된 메서드로 구성되어 있다. 멀티 스레드 환경에서 유리하다.</p>
+> <p>Vector는 ArrayList와 구조적으로 동일하나 동기화된 메서드로 구성되어 있다. 멀티 스레드 환경에서 유리하다. 그러나 반복자를 통해서 원소를 탐색할 때를 예로 들어 매번 locking이 걸려 쓸데없는 오버헤드가 발생할 수 있으므로 권장하지 않는다.</p>
+> 
+> ```java
+> ArrayList<String> listArray = new ArrayList<>(Collections.synchronizedList());
+> ```
+> <p>위 방법으로 ArrayList를 멀티스레드 환경에서 안전하게 사용할 수 있다.</p>
+
+> <h4>Stack</h4>
+> <p>Stack은 데이터의 이동이 후입선출(LIFO) 방식으로 이루어진다. Vector를 상속받기 떄문에 일반적으로 Deque 사용이 권장된다.</p>
 
 > <h4>LinkedList</h4>
 > <p>LinkedList는 인덱스가 아닌 인접 참조를 통해 객체를 관리한다. 객체의 제거와 수정이 잦을 경우 유리하다.</p>
-
-> <h4>Stack</h4>
-> <p>Stack은 데이터의 이동이 후입선출(LIFO) 방식으로 이루어진다.</p>
 
 ```java
 List<Integer> listArray = new ArrayList<>();
