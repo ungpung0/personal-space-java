@@ -1,3 +1,9 @@
+/**
+ * @Author : ungpung0
+ * @Date    : 23/01/05
+ * @Feature : 완성한 프로그램을 테스트한다.
+ **/
+
 package iterator;
 
 public class Main {
@@ -12,11 +18,6 @@ public class Main {
         Iterator<Book> iterator = bookShelf.iterator();
         while (iterator.hasNext()) {
             Book book = iterator.next();
-            System.out.println(book.getName());
-        }
-        System.out.println();
-
-        for(Book book : bookShelf) {
             System.out.println(book.getName());
         }
         System.out.println();

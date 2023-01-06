@@ -2,7 +2,7 @@
  * @Author : ungpung0
  * @Date    : 23/01/05
  * @Feature : 반복에 필요한 hasNext(), next()를 결정한다
- * */
+ **/
 
 package iterator;
 
