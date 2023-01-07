@@ -1,7 +1,7 @@
 /**
  * @Author : ungpung0
  * @Date    : 23/01/06
- * @Feature : FileIO의 메소드를 실행한다.
+ * @Feature : FileIO의 메서드를 실행한다.
  **/
 
 package adapter.practiece;

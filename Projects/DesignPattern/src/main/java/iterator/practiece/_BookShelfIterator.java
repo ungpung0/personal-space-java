@@ -1,7 +1,7 @@
 /**
  * @Author : ungpung0
  * @Date    : 23/01/05
- * @Feature : Iterator 연습문제, BookShelf를 _BookShelf로 변경한다.
+ * @Feature : 클래스 BookShelf를 _BookShelf로 변경한다.
  **/
 
 package iterator.practiece;

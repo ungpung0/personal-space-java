@@ -1,7 +1,7 @@
 /**
  * @Author : ungpung0
  * @Date    : 23/01/05
- * @Feature : 프로그램에서 iterator 메소드를 결정한다.
+ * @Feature : 프로그램에서 iterator 메서드를 결정한다.
  **/
 
 package iterator;

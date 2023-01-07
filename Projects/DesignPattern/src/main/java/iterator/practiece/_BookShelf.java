@@ -1,7 +1,7 @@
 /**
  * @Author : ungpung0
  * @Date    : 23/01/06
- * @Feature : Iterator 연습문제, 기존 Book[]을 List로 바꾸어 크기 제한을 없앤다.
+ * @Feature : BookShelf의 Book[]을 List로 바꾸어 크기 제한을 없앤다.
  **/
 
 package iterator.practiece;

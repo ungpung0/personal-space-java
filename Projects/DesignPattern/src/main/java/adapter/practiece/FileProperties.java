@@ -1,7 +1,7 @@
 /**
  * @Author : ungpung0
  * @Date    : 23/01/06
- * @Feature : FileIO의 메소드를 구현한다.
+ * @Feature : FileIO의 메서드를 구현한다.
  **/
 
 package adapter.practiece;
@@ -13,7 +13,7 @@ public class FileProperties implements FileIO {
     Properties properties = new Properties();
 
     /**
-     * filename에 해당하는 파일을 불러오는 메소드.
+     * filename에 해당하는 파일을 불러오는 메서드.
      * @param filename
      *          파일명
      **/

@@ -14,7 +14,7 @@ public class Book {
     }
 
     /**
-     * name을 반환하는 메소드.
+     * name을 반환하는 메서드.
      * */
     public String getName() {
         return name;
