@@ -31,8 +31,6 @@
 
 ---
 
----
-
 # 생성 패턴(Creational Pattern)
 
 생성 패턴은 인스턴스의 생성 절차를 추상화하는 패턴으로, 생성 및 합성 방법을 분리하기 위해서 인스턴스 간의 정보를 차단한다. 결과로서 코드의 <b>유연성</b>과 <b>재사용성</b>을 얻을 수 있다.
@@ -143,6 +141,102 @@ public class Main {
 
 
 ## 2. 추상 팩토리(Abstract Factory)
+
+<b>추상 팩토리(Abstract Factory)</b>는 관련있는 객체들을 묶고, 조건에 따라서 객체를 생성하는 패턴이다. 팩토리 패턴은 연관된 객체들을 모으는 것에 집중한다.
+
+<li>클래스 다이어그램</li>
+
+![classdiagram_abstractfactory](https://user-images.githubusercontent.com/90200010/217687766-98ae0eda-c84c-4475-ae96-72750eba78a1.svg)
+
+> <b>AbstractProduct(추상적인 제품)</b><br>
+> 개별 생성한 인스턴스들이 가지고 있는 인터페이스를 결정하는 추상 클래스.
+
+> <b>AbstractFactory(추상적인 공장)</b><br>
+> AbstractProduct 클래스를 생성하는 메서드들을 결정하는 추상 클래스.
+
+> <b>ConcreteProduct(구체적인 제품)</b><br>
+> AbstractProduct를 구현하여 구체적인 제품을 나타낸다.
+
+> <b>ConcreteFactory(구체적인 공장)</b><br>
+> AbstractFactory의 생성 메서드를 ConcreteProduct에 대응하여 구현한다.
+
+<li>코드 예제</li>
+
+```java
+public abstract class Shape {
+    public abstract void draw();
+}
+```
+
+<b>△ AbstractProduct 역할을 수행하는 추상 클래스. 모양을 설명하는 메서드를 결정한다.</b>
+
+```java
+public class Rectangle implements Shape {
+    @Override
+    public void draw() {
+        System.out.println("Rectangle Shape");
+    }
+}
+```
+
+```java
+public class Square implements Shape {
+    @Override
+    public void draw() {
+        System.out.println("Square Shape");
+    }
+}
+```
+
+<b>△ ConcreteProduct 역할을 수행하는 클래스. Shape를 상속받고 메서드를 구현한다.</b>
+
+```java
+public abstract AbstractFactory {
+    public Shape getShape(String type);
+}
+```
+
+<b>△ AbstractFactory 역할을 수행하는 클래스. Shape 인스턴스를 반환하는 메서드를 결정한다.</b>
+
+```java
+public class ShapeFactory implements AbstractFactory {
+    @Override
+    public Shape getShape(String type) {
+        if(type.equals("Rectangle"))
+            return new Rectangle();
+        else if(type.equals("Square"))
+            return new Square();
+        return null;
+    }
+}
+```
+
+<b>△ ConcreteFactory 역할을 수행하는 클래스. Shape 인스턴스를 반환하는 메서드를 결정한다.</b>
+
+```java
+public class Provider {
+    public static AbstractFactory getFactory(String type) {
+        if(type.equals("Shape"))
+            return new ShapeFactory();
+        return null;
+    }
+}
+```
+
+<b>△ Client에 Factory를 제공하는 클래스. getFactory()는 파라미터로 주어진 String을 검사하여 인스턴스를 반환한다.</b>
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        AbstractFactory factory = Provider.getFactory("Shape");
+        Shape rectangle = factory.getShape("Rectangle");
+        Shape square = factory.getShape("Square");
+        rectangle.draw();
+        square.draw();
+    }
+}
+```
+<b>△ Client 역할을 수행하는 클래스.</b>
 
 ## 3. 빌더(Builder)
 
