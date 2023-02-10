@@ -240,6 +240,174 @@ public class Main {
 
 ## 3. 빌더(Builder)
 
+<b>빌더(Builder)</b> 패턴은 복잡한 객체를 생성하는 방법을 <b>정의</b>하는 클래스와 <b>표현</b>하는 클래스를 분리하여, 생성 절차를 규격화하는 패턴이다. 즉, Optional한 속성을 많이 갖는 객체들을 생성할 때 유리하다.
+
+<li>클래스 다이어그램</li>
+
+![classdiagram_builder](https://user-images.githubusercontent.com/90200010/218005487-bb8d4980-06b0-4c05-8296-5b49aba913fc.svg)
+
+> <b>Builder(건축가)</b><br>
+> Product를 구성하는 요소들을 생성할 때 필요한 메서드를 결정한다.
+
+> <b>Director(감독관)</b><br>
+> Builder 인터페이스를 사용하여 Product 인스턴스를 생성한다.
+
+> <b>ConcreteBuilder(구체적인 건축가)</b><br>
+> Builder의 메서드를 구현한다.
+
+> <b>Product(제품)</b><br>
+> Builder 패턴으로 완성된 결과물.
+
+<li>코드 예제</li>
+
+```java
+public abstract class Builder {
+    public abstract void makeTitle(String title);
+    public abstract void makeString(String string);
+    public abstract void makeItems(String[] items);
+    public abstract void close();
+}
+```
+
+<b>△ Builder 역할을 수행하는 클래스. 문서를 구성하기 위한 메서드를 결정한다.</b>
+
+```java
+public class TextBuilder extends Builder {
+    private StringBuffer sb = new StringBuffer();
+
+    @Override
+    public void makeTitle(String title) {
+        sb.append("=========================\n");
+        sb.append("'" + title + "'\n");
+        sb.append("\n");
+    }
+
+    @Override
+    public void makeString(String string) {
+        sb.append("- " + string + "\n"); 
+    }
+
+    @Override
+    public void makeItems(String[] items) {
+        for(int i = 0; i < items.length; i++)
+            sb.append("  - " + items[i] + "\n");
+        sb.append("\n");
+    }
+
+    @Override
+    public void close() {
+        sb.append("=========================\n");
+    }
+
+    public String getResult() {
+        return sb.toString();
+    }
+}
+```
+
+```java
+public class HtmlBuilder extends Builder {
+    private String filename;
+    private PrintWriter writer;
+
+    @Override
+    public void makeTitle(String title) {
+        filename = title + ".html";
+        try {
+            writer = new PrintWriter(new FileWriter(filename));
+        }catch(IOException e) {
+            e.printStackTrace();
+        }
+        writer.println("<html><head><title>" + title + "</title><head><body>");
+        writer.println("<h1>" + title + "</h1>");
+    }
+
+    @Override
+    public void makeString(String string) {
+        writer.println("<p>" + string + "</p>");
+    }
+
+    @Override
+    public void makeItems(String[] items) {
+        writer.println("<ul>");
+        for(int i = 0; i < items.length; i++)
+            writer.println("<li>" + items[i] + "</li>");
+        writer.println("</ul>");
+    }
+
+    @Override
+    public void close() {
+        writer.println("</body></html>");
+        writer.close();
+    }
+
+    public String getResult() {
+        return filename;
+    }
+}
+```
+
+<b>△ ConcreteBuilder 역할을 수행하는 클래스. TextBuilder는 텍스트를, HtmlBuilder는 HTML 문서를 생성한다.</b>
+
+```java
+public class Guide {
+    private Builder builder;
+
+    public Guide(Builder builder) {
+        this.builder = builder;
+    }
+
+    public void construct() {
+        builder.makeTitle("야유회에 대해서");
+        builder.makeString("일시");
+        builder.makeItems(new String[] {
+            "2023/02/10", "11:00",
+        });
+
+        builder.makeString("장소");
+        builder.makeItems(new String[] {
+            "ooo 캠핑장",
+        });
+        
+        builder.makeString("준비물");
+        builder.makeItems(new String[] {
+            "회비", "고기", "음료수",
+        });
+
+        builder.close();
+    }
+}
+```
+
+<b>△ Product 역할을 수행하는 클래스. 문서의 속성값을 설정한다.</b>
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        if(args.length != 1) {
+            System.exit(0);
+        }
+        if(args[0].equals("plain")) {
+            TextBuilder textBuilder = new TextBuilder();
+            Guide guide = new Guide(textBuilder);
+            guide.construct();
+            String result = textBuilder.getResult();
+            System.out.println(result);
+        }else if(args[0].equals("html")) {
+            HtmlBuilder htmlBuilder = new HtmlBuilder();
+            Guide guide = new Guide(htmlBuilder);
+            guide.construct();
+            String filename = htmlBuilder.getResult();
+            System.out.println(filename);
+        }else {
+            System.exit(0);
+        }
+    }
+}
+```
+
+<b>△ 명령어에 따라서 프로그램을 실행한다.</b>
+
 ## 4. 프로토타입(Prototype)
 
 ## 5. 싱글턴(Singleton)
