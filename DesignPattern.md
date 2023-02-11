@@ -8,7 +8,7 @@
   - [2. 추상 팩토리(Abstract Factory)](#2-추상-팩토리abstract-factory)
   - [3. 빌더(Builder)](#3-빌더builder)
   - [4. 프로토타입(Prototype)](#4-프로토타입prototype)
-  - [5. 싱글턴(Singleton)](#5-싱글턴singleton)
+  - [5. 싱글톤(Singleton)](#5-싱글톤singleton)
 - [구조 패턴(Structural Pattern)](#구조-패턴structural-pattern)
   - [1. 어댑터(Adapter)](#1-어댑터adapter)
   - [2. 브리지(Bridge)](#2-브리지bridge)
@@ -410,9 +410,125 @@ public class Main {
 
 ## 4. 프로토타입(Prototype)
 
-## 5. 싱글턴(Singleton)
+<b>프로토타입(Prototype)</b> 패턴은 객체를 생성하는 자원을 절약하기 위해서 유사한 객체를 복사하고 수정하는 방법을 제공한다. 주로 Java에서는 clone()을 사용한다.
 
----
+<li>클래스 다이어그램</li>
+
+![classdiagram_prototype](https://user-images.githubusercontent.com/90200010/218251086-07867370-1d98-4fed-a45b-4fd0b063f416.svg)
+
+> <b>Prototype(원형)</b><br>
+> 인스턴스를 복사하여 새로운 인스턴스를 생성하는 메서드를 결정한다.
+
+> <b>ConcretePrototype(구체적인 원형)</b><br>
+> Prototype을 구현하여 새로운 인스턴스를 생성하는 메서드를 구현한다.
+
+> <b>Client(사용자)</b><br>
+> Prototype을 사용하여 새로운 인스턴스를 사용한다.
+
+<li>코드 예제</li>
+
+```java
+public class Car implements Cloneable {
+    private List<String> carList;
+
+    public Car() {
+        this.carList = new ArrayList<>();
+    }
+
+    public Car(List<String> carList) {
+        this.carList = carList;
+    }
+
+    public List<String> getCarList {
+        return carList;
+    }
+
+    public void addExample {
+        this.carList.add("TRUCK");
+        this.carList.add("SUV");
+        this.carList.add("MUSCLE");
+        this.carList.add("SPORTS");
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return new Car(new ArrayList<>(this.carList));
+    }
+}
+```
+
+<b>△ Prototype 역할을 수행하는 클래스. 차량 목록을 다루는 클래스로 clone()을 오버라이드하여 인스턴스 복사 기능을 제공한다.</b>
+
+```java
+public class Main {
+    public static void main(String[] args) throws CloneNotSupportedException {
+        Car car1 =  new Car();
+        car.addExample();
+
+        Car car2 = (Car) car.clone();
+        Car car3 = (Car) car.clone();
+
+        List<String> car1List = car1.getCarList();
+        List<String> car2List = car2.getCarList();
+        List<String> car3List = car3.getCarList();
+
+        car2List.add("TOY_CAR");
+        car3List.remove("TRUCK");
+
+        System.out.println(car1List);
+        System.out.println(car2List);
+        System.out.println(car3List);
+    }
+}
+```
+
+<b>△ Client 역할을 수행하는 클래스. Car 인스턴스를 Clone()을 사용하여 여러 개 생성한다.</b>
+
+## 5. 싱글톤(Singleton)
+
+<li>클래스 다이어그램</li>
+
+![classdiagram_singleton](https://user-images.githubusercontent.com/90200010/218276225-b53f78f9-e191-4390-bd59-46328cd09116.svg)
+
+> <b>Singleton(싱글톤)</b><br>
+> 자기 자신을 인스턴스로 생성하여 반환하는 메서드를 제공한다.
+
+> <b>Client(사용자)</b><br>
+> 싱글톤 인스턴스를 사용한다.
+
+<li>코드 예제</li>
+
+```java
+public class Singleton {
+    private static Singleton instance = new Singleton();
+
+    private Singleton() {
+        System.out.println("Instance Created...");
+    }
+
+    public static Singleton getInstance() {
+        return instance;
+    }
+}
+```
+
+<b>△ Singleton 역할을 수행하는 클래스. private static으로 스스로 인스턴스화하여 제공한다.</b>
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        Singleton object1 = Singleton.getInstance();
+        Singleton object2 = Singleton.getInstance();
+
+        if(object1 == object2)
+            System.out.println("Object1 == Object2");
+        else
+            System.out.println("Object1 != Object2");
+    }
+}
+```
+
+<b>△ Client 역할을 수행하는 클래스. Singleton 인스턴스를 제공받고 동일 여부를 출력한다.</b>
 
 # 구조 패턴(Structural Pattern)
 
