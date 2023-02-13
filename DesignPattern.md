@@ -628,6 +628,133 @@ class Main {
 
 ## 2. 브리지(Bridge)
 
+<b>브리지(Bridge)</b> 패턴은 기능을 처리하는 클래스와 구현을 담당하는 클래스를 분리하여 독립적으로 사용할 수 있는 방법을 제시하는 패턴이다.
+
+<li>클래스 다이어그램</li>
+
+![classdiagram_bridge](https://user-images.githubusercontent.com/90200010/218489148-6ee5285b-ebf2-4467-8309-b3b808f71af3.svg)
+
+> <b>Abstraction(추상화)</b><br>
+> Abstraction은 기능 파트를 최상위 클래스.
+
+> <b>RefinedAbstraction(개선된 추상화)</b><br>
+> RefinedAbstraction은 Abstract에 기능을 추가하는 클래스.
+
+> <b>Implementor(구현자)</b><br>
+> Implementor는 구현 파트의 최상위 클래스.
+
+> <b>ConcreteImplementor(구체적인 구현자)</b><br>
+> ConcreteImplementor는 Implementor의 API를 구현하는 클래스.
+
+<li>코드 예제</li>
+
+```java
+public abstract class Shape {
+    private Drawing drawing;
+
+    protected Shape(Drawing drawing) {
+        this.drawing = drawing;
+    }
+
+    public abstract void draw();
+
+    public void drawLine(int x, int y) {
+        drawing.drawLine(x, y);
+    }
+
+    public void fill() {
+        drawing.fill();
+    }
+}
+```
+
+<b>△ Abstraction 역할을 수행하는 추상 클래스. Drawing 인스턴스를 사용하여 구현 파트의 메서드를 호출한다.</b>
+
+```java
+public class Rectangle extends Shape {
+    protected Rectangle(Drawing drawing) {
+        super(drawing);
+    }
+
+    @Override
+    public void draw() {
+        System.out.println("Draw Rectangle!");
+    }
+}
+
+public class Circle extends Shape {
+    protected Circle(Drawing drawing) {
+        super(drawing);
+    }
+
+    @Override
+    public void draw() {
+        System.out.println("Draw Circle!");
+    }
+}
+```
+
+<b>△ RefinedAbstraction 역할을 수행하는 클래스. Shape를 구현하여 사각형과 원의 기능을 분리하여 구현한다.</b>
+
+```java
+public interface Drawing {
+    public void drawLine(int x, int y);
+
+    public void fill();
+}
+```
+
+<b>△ Implementor 역할을 수행하는 인터페이스. 구현 클래스를 위한 API를 정의한다.</b>
+
+```java
+public class DrawingRectangle implements Drawing {
+    @Override
+    public void drawLine(int x, int y) {
+        System.out.println("Draw Rectangle Line from (" + x + "," + y + ")");
+    }
+
+    @Override
+    public void fill() {
+        System.out.println("Fill Rectangle!");
+    }
+}
+
+public class DrawingCircle implements Drawing {
+    @Override
+    public void drawLine(int x, int y) {
+        System.out.println("Draw Circle Line from (" + x + "," + y + ")");
+    }
+
+    @Override
+    public void fill() {
+        System.out.println("Fill Circle!");
+    }
+}
+```
+
+<b>△ ConcreteImplementor 역할을 수행하는 클래스. Drawing을 구현하여 사각형과 원을 그린다. (콘솔 출력)</b>
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        Shape rectangle = new Rectangle(new DrawingRectangle());
+        Shape circle = new Circle(new DrawingCircle());
+
+        rectangle.drawLine(1, 2);
+        rectangle.fill();
+        rectangle.draw();
+
+        System.out.println();
+
+        circle.drawLine(3, 4);
+        circle.fill();
+        circle.draw();
+    }
+}
+```
+
+<b>△ Client 역할을 수행하는 클래스. Rectangle과 Circle 객체를 생성한다.</b>
+
 ## 3. 복합체(Composite)
 
 ## 4. 데코레이터(Decorator)
