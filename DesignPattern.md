@@ -532,7 +532,99 @@ public class Main {
 
 # 구조 패턴(Structural Pattern)
 
+생성 패턴은 인스턴스의 생성 클래스와 객체를 조합하여 구조를 확장하는 패턴이다. 예를들어 독립적인 여러 인터페이스를 하나의 인터페이스로 묶어서 제공할 수 있다.
+
 ## 1. 어댑터(Adapter)
+
+<b>어댑터(Adapter)</b> 패턴은 문제없이 동작하는 클래스를 단지 인터페이스 차이 때문에 사용할 수 없을 때, 사용하는 패턴이다.
+
+<li>클래스 다이어그램</li>
+
+![classdiagram_adapter](https://user-images.githubusercontent.com/90200010/218367031-576d7f16-2a6c-4661-9c79-b7996e23c11a.svg)
+
+> <b>Adaptee(적응 대상자)</b><br>
+> Adaptee는 변환이 필요한 대상 클래스이다.
+
+> <b>Adapter(적응자)</b><br>
+> Adapter는 Adaptee를 Target에 만족시키는 메서드를 제공한다.
+
+> <b>Target(대상)</b><br>
+> Target은 Client에서 필요로하는 메서드를 제공한다.
+
+> <b>Client(사용자)</b><br>
+> Target의 메서드를 사용한다.
+
+<li>코드 예제</li>
+
+```java
+public class RGB {
+    private byte[] images;
+
+    public byte[] getImages() {
+        return images;
+    }
+
+    public void setImages(byte[] images) {
+        this.images = images;
+    }
+}
+```
+
+<b>△ Adaptee 역할을 수행하는 클래스. 이미지를 설정 및 반환하는 메서드를 제공한다.</b>
+
+```java
+public class HDMI {
+    private byte[] images;
+
+    public HDMI(byte[] images) {
+        this.images = images;
+    }
+
+    public byte[] getImages() {
+        return images;
+    }
+
+    public void setImages(byte[] images) {
+        this.images = images;
+    }
+}
+```
+
+<b>△ Target 역할을 수행하는 클래스. 이미지를 설정 및 반환하는 메서드를 제공한다.</b>
+
+```java
+public interface Adapter {
+    HDMI convertRGBtoHDMI(RGB rgb);
+}
+```
+
+```java
+public class HDMIConverter implements Adapter {
+    @Override
+    public HDMI ConvertRGBtoHDMI(RGB rgb) {
+        return new HDMI(rgb.getImages());
+    }
+}
+```
+
+<b>△ Adapter 역할을 수행하는 클래스. RGB의 getImages를 사용하여 HDMI 인스턴스를 반환한다.</b>
+
+```java
+class Main {
+    public static void main(String[] args) {
+        byte[] images = "변환할 이미지 스트림".getBytes(StandardCharsets.UTF_8);
+        RGB rgb = new RGB();
+        rgb.setImages(images);
+
+        HDMIConverter hdmiConverter = new HDMIConverter();
+        HDMI result = hdmiConverter.convertRGBtoHDMI(rgb);
+        
+        assertEquals(result.getImages, images);
+    }
+}
+```
+
+<b>△ Client 역할을 수행하는 클래스. HDMIConverter를 사용하여 RGB 객체를 HDMI 객체로 변환한다.</b>
 
 ## 2. 브리지(Bridge)
 
