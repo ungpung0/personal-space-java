@@ -757,6 +757,140 @@ public class Main {
 
 ## 3. 복합체(Composite)
 
+<b>복합체(Composite)</b> 패턴은 단일 객체와 복합 객체를 동일하게 취급할 수 있는 방법을 제시한다. 재귀적인 특성을 가지며, 트리 구조와 비슷한 형태를 가진다.
+
+<li>클래스 다이어그램</li>
+
+![classdiagram_composite](https://user-images.githubusercontent.com/90200010/218661720-b557e248-58e8-4207-8d26-c9b6c00c7dba.svg)
+
+> <b>Leaf(잎)</b><br>
+> Leaf는 다른 객체를 포함할 수 없는 단일 객체를 뜻한다.
+
+> <b>Composite(복합체)</b><br>
+> Composite는 Leaf, Composite를 포함할 수 있는 복합 객체를 뜻한다.
+
+> <b>Component(컴포넌트)</b><br>
+> Leaf과 Composite의 부모 클래스로, 둘을 동일하게 취급하기 위한 API를 제공한다.
+
+> <b>Client(사용자)</b><br>
+> Component를 활용하여 Composite 패턴의 프로그램을 실행한다.
+
+<li>코드 예제</li>
+
+```java
+public abstract class Unit {
+    private String name;
+
+    public Unit(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public String toString() {
+        return name + "(" + getSize() + ")";
+    }
+
+    public abstract int getSize();
+}
+```
+
+<b>△ Component 역할을 수행하는 클래스. File과 Folder의 부모 역할을 맡은 추상 클래스이다.</b>
+
+```java
+public class File extends Unit {
+    private int size;
+
+    public File(String name, int size) {
+        super(name);
+        this.size = size;
+    }
+
+    @Override
+    public int getSize() {
+        return size;
+    }
+}
+```
+
+<b>△ Leaf 역할을 수행하는 클래스. 디렉토리에서 하나의 파일을 의미한다.</b>
+
+```java
+public class Folder extends Unit {
+    private LinkedList<Unit> unitList = new LinkedList<Unit>();
+
+    public Folder(String name) {
+        super(name);
+    }
+
+    @Override 
+    public int getSize {
+        int size = 0;
+        Iterator<Unit> iterator = unitList.iterator();
+
+        while(iterator.hasNext()) {
+            Unit unit = iterator.next();
+            size += unit.getSize();
+        }
+
+        return size;
+    }
+
+    public boolean add(Unit unit) {
+        unitList.add(unit);
+        return true;
+    }
+
+    private void list(String indent, Unit unit) {
+        if(unit instanceof File) {
+            System.out.println(indent + unit);
+        }else {
+            Folder directory = (Folder)unit;
+            Iterator<Unit> iterator = directory.unitList.iterator();
+            System.out.println(indent + "+ " + unit);
+
+            while(iterator.hasNext()) {
+                list(indent + "    " + iterator.next());
+            } 
+        }
+    }
+
+    public void list() {
+        list("", this);
+    }
+}
+```
+
+<b>△ Composite 역할을 수행하는 클래스. 디렉토리에서 하나 이상의 파일과 폴더를 포함할 수 있는 폴더를 의미한다.</b>
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        Folder root = new Folder("root");
+        root.add(new File("a.txt", 1000));
+        root.add(new File("b.txt", 2000));
+
+        Folder sub1 = new Folder("sub1");
+        root.add(sub1);
+        sub1.add(new File("sa.txt", 100));
+        sub1.add(new File("sb.txt", 4000));
+
+        Folder sub2 = new Folder("sub2");
+        root.add(sub2);
+        sub1.add(new File("SA.txt", 250));
+        sub1.add(new File("SB.txt", 340));
+
+        root.list();
+
+    }
+}
+```
+
+<b>△ Leaf 역할을 수행하는 클래스. 디렉토리 구조를 생성하고 목록을 출력한다.</b>
+
 ## 4. 데코레이터(Decorator)
 
 ## 5. 퍼사드(Facade)
