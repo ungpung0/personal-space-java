@@ -1018,6 +1018,8 @@ public class Main {
 > <b>Client(사용자)</b><br>
 > Client는 Facade 패턴의 프로그램을 실행한다.
 
+<li>코드 예제</li>
+
 ```java
 public class Computer {
     private boolean toggle = false;
@@ -1131,6 +1133,100 @@ public class Main {
 <b>△ Client 역할을 수행하는 클래스. Facade 패턴을 적용하여 집에 도착하고 떠났을 때 변경사항을 출력한다.</b>
 
 ## 6. 플라이웨이트(FlyWeight)
+
+<li>클래스 다이어그램</li>
+
+![classdiagram_flyweight](https://user-images.githubusercontent.com/90200010/219301130-c2df4d23-1f36-4172-a84e-65313c7993c1.svg)
+
+> <b>Flyweight(플라이급)</b><br>
+> Flyweight는 경량화를 위해서 공유할 클래스들의 API를 선언한다.
+
+> <b>FlyweightFactory(플라이급 공장)</b><br>
+> FlyweightFactory는 Flyweight 인스턴스를 생성하는 역할을 맡는다.
+
+> <b>Client(사용자)</b><br>
+> Client는 Flyweight 패턴의 프로그램을 실행한다.
+
+<li>코드 예제</li>
+
+```java
+public interface Shape {
+    public void draw();
+}
+
+public class Circle implements Shape {
+    private String color;
+    private int x;
+    private int y;
+    private int radius;
+
+    public Circle(String color) {
+        this.color = color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    public void setRadius(int radius) {
+        this.radius = radius;
+    }
+
+    @Override
+    public void draw() {
+        System.out.println("Draw Circle\n" + "Color: " + color + "X: " + x + "Y: " + y + "Radius: " + radius + "\n");
+    }
+}
+```
+
+<b>△ Flyweight, ConcreteFlyweight 역할을 수행하는 인터페이스, 클래스. 공유가 필요한 속성을 가지고 있다.</b>
+
+```java
+public class ShapeFactory {
+    private static final HashMap<String, Circle> map = new HashMap<>();
+
+    public static Shape getCircle(String color) {
+        Circle circle = (Circle)map.get(color);
+
+        if(circle == null) {
+            circle = new Circle(color);
+            map.put(color, circle);
+            System.out.println("Create New Circle.");
+        }
+
+        return circle;
+    }
+
+}
+```
+
+<b>△ FlyweightFactory 역할을 수행하는 클래스. Cicle 인스턴스를 생성하여 Map에 저장하고 반환한다.</b>
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        String[] colors = {"RED", "GREEN", "BLUE", "YELLOW"};
+
+        for(int i = 0; i < 10; i++) {
+            Circle circle = (Circle)ShapeFactory.getCircle(colors[(int)(Math.random() * 4)]);
+            circle.setX((int)(Math.random() * 100));
+            circle.setX((int)(Math.random() * 4));
+            circle.setX((int)(Math.random() * 10));
+            circle.draw();
+        }
+    }
+}
+```
+
+<b>△ Client 역할을 수행하는 클래스. Flyweight 패턴을 적용하여 Circle 객체를 10개 무작위 생성한다.</b>
 
 ## 7. 프록시(Proxy)
 
