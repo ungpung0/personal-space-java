@@ -889,9 +889,117 @@ public class Main {
 }
 ```
 
-<b>△ Leaf 역할을 수행하는 클래스. 디렉토리 구조를 생성하고 목록을 출력한다.</b>
+<b>△ Client 역할을 수행하는 클래스. 디렉토리 구조를 생성하고 목록을 출력한다.</b>
 
 ## 4. 데코레이터(Decorator)
+
+<b>데코레이터(Decorator)</b> 패턴은 객체의 결합을 통해서 기능을 동적으로 확장할 수 있는 방법을 제시하는 패턴이다.
+
+<li>클래스 다이어그램</li>
+
+![classdiagram_decorator](https://user-images.githubusercontent.com/90200010/219281805-e122d86f-70f5-42d1-9095-b9f929e46d12.svg)
+
+> <b>Component(컴포넌트)</b><br>
+> Component는 기능을 추가할 때의 기반 역할을 맡는다.
+
+> <b>ConcreteComponent(구체적인 컴포넌트)</b><br>
+> ConcreteComponent는 Component의 API를 구현한다.
+
+> <b>Decorator(장식자)</b><br>
+> Decorator는 Component와 ConcreteDecorator를 동일하게 처리하는 역할을 맡는다. 
+
+> <b>ConcreteDecorator(구체적인 장식자)</b><br>
+> ConcreteDecorator는 Decorator를 구체적으로 구현한다.
+
+<li>코드 예제</li>
+
+```java
+public interface Noodle {
+    public void addIngredient();
+}
+```
+
+<b>△ Component 역할을 수행하는 인터페이스. 재료 추가 메서드를 선언한다.</b>
+
+```java
+public class Ramen implements Noodle {
+    @Override
+    public void addIngredient() {
+        System.out.print("Add Ingredients: Noodles.");
+    }
+}
+```
+
+<b>△ ConcreteComponent 역할을 수행하는 클래스. Noodle의 메서드를 구현한다.</b>
+
+```java
+public class RamenDecorator implements Noodle {
+    private Noodle noodle;
+
+    public RamenDecorator(final Noodle noodle) {
+        this.noodle = noodle;
+    }
+
+    @Override
+    public void addIngredient() {
+        noodle.addIngredient();
+    }
+}
+```
+
+<b>△ Decorator 역할을 수행하는 클래스. Noodle을 인스턴스로 가지며, 생성자를 통해 받아들인다.</b>
+
+```java
+public class ShinRamenDecorator extends Ramen {
+    public ShinRamenDecorator(final Noodle noodle) {
+        super(noodle);
+    }
+
+    @Override
+    public void addIngredient() {
+        super.addIngredient();
+        System.out.print("Add Ingredients: Spicy Condiment.");
+    }
+}
+
+public class NeoguriDecorator extends Ramen {
+    public NeoguriDecorator(final Noodle noodle) {
+        super(noodle);
+    }
+
+    @Override
+    public void addIngredient() {
+        super.addIngredient();
+        System.out.print("Add Ingredients: Kelp.");
+    }
+} 
+```
+
+<b>△ ConcreteDecorator 역할을 수행하는 클래스. RamenDecorator의 Noodle 인스턴스와 메서드에 더하여, 새로운 재료를 출력한다.</b>
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        final Noodle ramen = new Ramen();
+        ramen.addIngredient();
+        System.out.println();
+
+        final Noodle shinRamen = new ShinRamenDecorator(new Ramen());
+        shinRamen.addIngredient();
+        System.out.println();
+
+        final Noodle neoguriRamen = new NeoguriDecorator(new Ramen());
+        neoguriRamen.addIngredient();
+        System.out.println();
+
+        final Noodle shinNeoguriRamen = new NeoguriDecorator(ShinRamenDecorator(new Ramen()));
+        shinNeoguriRamen.addIngredient();
+        System.out.println();
+    }
+}
+```
+
+<b>△ Client 역할을 수행하는 클래스. Decorator 패턴을 적용하여 라면 조합에 따라서 재료를 출력한다.</b>
 
 ## 5. 퍼사드(Facade)
 
