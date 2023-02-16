@@ -1003,6 +1003,133 @@ public class Main {
 
 ## 5. 퍼사드(Facade)
 
+<b>퍼사드(Facade)</b> 패턴은 복잡한 하위 시스템을 정리 및 종합하고, 사용자에게 API로서 제공하는 방식의 패턴이다.
+
+<li>클래스 다이어그램</li>
+
+![classdiagram_facade](https://user-images.githubusercontent.com/90200010/219294357-d2db4ce5-0881-4866-aa6a-a6669d893ded.svg)
+
+> <b>Facade(정면)</b><br>
+> Facade는 시스템을 구성하는 많은 역할을 위한 기타 클래스들을 정리 및 종합하여 API를 제공한다.
+
+> <b>ETC(기타 클래스)</b><br>
+> 기타 클래스들은 각자의 배역을 수행하며, Facade를 신경쓰지 않는다.
+
+> <b>Client(사용자)</b><br>
+> Client는 Facade 패턴의 프로그램을 실행한다.
+
+```java
+public class Computer {
+    private boolean toggle = false;
+
+    public void turnOn() {
+        toggle = true;
+        System.out.println("Computer On.");
+    }
+
+    public void turnOff() {
+        toggle = false;
+        System.out.println("Computer Off.");
+    }
+
+    public boolean isTurnedOn() {
+        return toggle;
+    }
+}
+
+public class Lights {
+    private boolean toggle = false;
+
+    public void turnOn() {
+        toggle = true;
+        System.out.println("Lights On.");
+    }
+
+    public void turnOff() {
+        toggle = false;
+        System.out.println("Lights Off.");
+    }
+
+    public boolean isTurnedOn() {
+        return toggle;
+    }
+}
+
+public class Radio {
+    private boolean toggle = false;
+
+    public void turnOn() {
+        toggle = true;
+        System.out.println("Radio On.");
+    }
+
+    public void turnOff() {
+        toggle = false;
+        System.out.println("Radio Off.");
+    }
+
+    public boolean isTurnedOn() {
+        return toggle;
+    }
+}
+```
+
+<b>△ 기타 메서드 역할을 수행하는 클래스. Computer, Lights, Radio는 각자 독립적으로 작동한다.</b>
+
+```java
+public class Home {
+    private Computer computer;
+    private Lights lights;
+    private Radio radio;
+
+    public Home(Computer computer, Lights lights, Radio radio) {
+        this.computer = computer;
+        this.lights = lights;
+        this.radio = radio;
+    }
+
+    public void arrive() {
+        System.out.println("Arrive to Home!");
+        if(!computer.isTurnedOn())
+            computer.trunOn();
+        if(!lights.isTurnedOn())
+            lights.turnOn();
+        if(!radio.isTurnedOn())
+            radio.turnOn();
+    }
+
+    public void leave() {
+        System.out.println("Leave from Home!");
+        if(computer.isTurnedOn())
+            computer.turnOff();
+        if(lights.isTurnedOn())
+            lights.turnOff();
+        if(radio.isTurnedOn())
+            radio.turnOff();
+    }
+}
+```
+
+<b>△ Facade 역할을 수행하는 클래스. Computer, Lights, Radio 클래스를 활용하여 API를 제공한다.</b>
+
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        Computer computer = new Computer();
+        Lights lights = new Lights();
+        Radio radio = new Radio();
+        
+        Home home = new Home(computer, lights, radio);
+        Home.arrive();
+        System.out.println();
+        Home.leave();
+    }
+}
+```
+
+<b>△ Client 역할을 수행하는 클래스. Facade 패턴을 적용하여 집에 도착하고 떠났을 때 변경사항을 출력한다.</b>
+
 ## 6. 플라이웨이트(FlyWeight)
 
 ## 7. 프록시(Proxy)
