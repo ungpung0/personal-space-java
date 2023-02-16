@@ -120,4 +120,7 @@ gradle-app.setting
 *.gradle
 *.bat
 *.jar
+*.png
+*.drawio
+*.bkp
 gradlew
