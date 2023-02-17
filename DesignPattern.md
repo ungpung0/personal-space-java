@@ -1230,6 +1230,88 @@ public class Main {
 
 ## 7. 프록시(Proxy)
 
+<li>클래스 다이어그램</li>
+
+![classdiagram_proxy](https://user-images.githubusercontent.com/90200010/219504632-ad37308b-300d-4aa0-b06e-9a99cb509ee1.svg)
+
+> <b>Subject(본인)</b><br>
+> Subject는 Proxy와 RealSubject를 동일시하기 위한 API를 정의한다.
+
+> <b>Proxy(대리인)</b><br>
+> Proxy는 Client의 요청을 처리하되, 불가능하면 RealSubject에 위임한다.
+
+> <b>RealSubject(실제 본인)</b><br>
+> RealSubject는 Proxy가 처리가 불가능할 때, 위임받아 요청을 처리한다.
+
+> <b>Client(사용자)</b><br>
+> Client는 Proxy 패턴의 프로그램을 실행한다.
+
+<li>코드 예제</li>
+
+```java
+public interface Image {
+    public void displayImage();
+}
+```
+
+<b>△ Subject 역할을 수행하는 인터페이스. ProxyImage와 RealImage에서 사용할 메서드를 정의한다.</b>
+
+```java
+public class RealImage implements Image {
+    private String filename;
+
+    public RealImage(String filename) {
+        this.filename = filename;
+    }
+
+    private void loadFromDisk(String filename) {
+        System.out.println(filename + " Loaded.");
+    }
+
+    @Override
+    public void displayImage() {
+        System.out.println(filename + " Displayed.");
+    } 
+}
+```
+
+<b>△ RealSubject 역할을 수행하는 클래스. ProxyImage로부터 호출되어 이미지명을 출력한다.</b>
+
+```java
+public class ProxyImage implements Image {
+    private String filename;
+    private RealImage realImage;
+
+    public ProxyImage(String filename) {
+        this.filename = filename;
+    }
+
+    @Override
+    public void displayImage() {
+        if(realImage == null) {
+            realImage = new RealImage(filename);
+        }
+        realImage.displayImage();
+    }
+}
+```
+
+<b>△ Proxy 역할을 수행하는 클래스. displayImage()에서 Realmage 인스턴스를 통해 RealImage.displayImage() 메서드를 호출한다.</b>
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        Image image1 = new ProxyImage("test1.png");
+        Image image2 = new ProxyImage("test2.png");
+
+        image1.displayImage();
+        image2.displayImage();
+    }
+}
+```
+
+<b>△ Client 역할을 수행하는 클래스. Proxy 패턴을 적용하여 이미지명을 표시한다.</b>
+
 ---
 
 # 행동 패턴(Behavioral Pattern)
