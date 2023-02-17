@@ -1134,6 +1134,8 @@ public class Main {
 
 ## 6. 플라이웨이트(FlyWeight)
 
+<b>플라이웨이트(Flyweight)</b> 패턴은 클래스의 하나의 실제 인스턴스를 여러 개의 가상 인스턴스로 공유하여 메모리 낭비를 방지하는 패턴이다.
+
 <li>클래스 다이어그램</li>
 
 ![classdiagram_flyweight](https://user-images.githubusercontent.com/90200010/219301130-c2df4d23-1f36-4172-a84e-65313c7993c1.svg)
@@ -1230,6 +1232,8 @@ public class Main {
 
 ## 7. 프록시(Proxy)
 
+<b>프록시(Proxy)</b> 패턴은 객체를 참조할 때, 대응하는 객체를 통해서 간접적으로 접근하는 방식의 패턴이다.
+
 <li>클래스 다이어그램</li>
 
 ![classdiagram_proxy](https://user-images.githubusercontent.com/90200010/219504632-ad37308b-300d-4aa0-b06e-9a99cb509ee1.svg)
@@ -1316,7 +1320,110 @@ public class Main {
 
 # 행동 패턴(Behavioral Pattern)
 
+행동 패턴은 객체나 클래스 사이의 알고리즘, 책임 분배와 관련한 패턴이다. 개발자는 행동 패턴을 사용하여 어렵고 복잡한 프로그램의 <b>'제어 흐름(Control Flow)'</b>보다 객체 간의 연결 방식에 집중할 수 있다.
+
+
 ## 1. 책임 연쇄(Chain of Responsibility)
+
+<b>책임 연쇄(Chain of Responsibility)</b> 패턴은 핸들러(Handler)들이 상호 연결된 체인(Chain)을 사용하여 요청을 전달할 수 있게 만들어주는 패턴이다.
+
+<li>클래스 다이어그램</li>
+
+![classdiagram_chainofresponsibility](https://user-images.githubusercontent.com/90200010/219598208-6d31e184-a4d5-4173-8d25-997c96f8a011.svg)
+
+> <b>Handler(처리자)</b><br>
+> Handler는 요구를 다음 Handler로 전달하여 처리하는 API를 정의한다.
+
+> <b>ConcreteHandler(구체적인 처리자)</b><br>
+> ConcreteHandler는 Handler를 구현하여 요구를 구체적으로 처리한다. 
+
+> <b>Client(사용자)</b><br>
+> Client는 Chain of Responsibility 패턴의 프로그램을 실행한다.
+
+<li>코드 예제</li>
+
+```java
+public abstract class Reciever {
+    private String name;
+    private Receiver next = null;
+
+    public Receiver(String name) {
+        this.name = name;
+    }
+
+    public Receiver setNext(Receiver next) {
+        this.next = next;
+        return next;
+    }
+
+    public final void support(int number) {
+        if(resolve(number))
+            done(number);
+        else if(next != null)
+            next.support(number);
+        else
+            System.out.println("Support Failed.");
+    }
+
+    public abstract boolean resolve(int number);
+
+    public abstract void done(int number);
+}
+```
+
+<b>△ Handler 역할을 수행하는 추상 클래스. 숫자를 처리하고 실패하면 다음 Receiver를 호출한다.</b>
+
+```java
+public class EvenReceiver extends Receiver {
+    public EvenReceiver(String name) {
+        super(name);
+    }
+
+    public boolean resolve(int number) {
+        if(number % 2 == 0)
+            return true;
+        else
+            return false;
+    }
+
+    public void done(int number) {
+        System.out.println(number + ":" + name + "Solved.");
+    }
+}
+
+public class OddReceiver extends Receiver {
+    public OddReceiver(String name) {
+        super(name);
+    }
+
+    public boolean resolve(int number) {
+        if(number % 2 != 0)
+            return true;
+        else
+            return false;
+    }
+
+    public void done(int number) {
+        System.out.println(number + ":" + name + "Solved.");
+    }
+}
+```
+
+<b>△ ConcreteHandler 역할을 수행하는 클래스. 짝수는 EvenReceiver가, 홀수는 OddReceiver가 처리한다.</b>
+
+```java
+public class Main {
+    public static void main(String[] args) throws InterruptedException {
+        Receiver oddReceiver = new OddReceiver("홀수 리시버");
+        Receiver evenReceiver = new EvenReceiver("짝수 리시버");
+
+        for(int i = 1; i <= 20; i++)
+            oddReceiver.support(i);
+    }
+}
+```
+
+<b>△ Client 역할을 수행하는 클래스. ChainofResponsibility 패턴을 적용하여 숫자를 처리한다 표시한다.</b>
 
 ## 2. 커맨드(Command)
 
