@@ -1494,7 +1494,7 @@ public class Alarm {
 
 ```
 
-<b>△ Receiver 역할을 수행하는 클래스. press()가 호출되면 Command.execute()로 명령을 실행한다.</b>
+<b>△ Receiver 역할을 수행하는 클래스. Command의 실행 대상이다.</b>
 
 ```java
 public class LampCommand implements Command {
@@ -1547,6 +1547,138 @@ public class Main {
 <b>△ Client 역할을 수행하는 클래스. Command 패턴을 사용하여 램프와 알람을 작동시킨다.</b>
 
 ## 3. 반복자(Iterator)
+
+<li>클래스 다이어그램</li>
+
+![classdiagram_iterator](https://user-images.githubusercontent.com/90200010/219827174-4ed55dfc-5546-43aa-9fe5-23b695eb8b00.svg)
+
+> <b>Iterator(반복자)</b><br>
+> Iterator는 요소를 순서대로 검색하는 API를 정의한다.
+
+> <b>ConcreteIterator(구체적인 반복자)</b><br>
+> ConcreteIterator는 Iterator의 API를 실제로 구현한다.
+
+> <b>Aggregate(집합체)</b><br>
+> Aggregate는 Iterator를 생성하는 API를 정의한다.
+
+> <b>ConcreteAggregate(구체적인 집합체)</b><br>
+> ConcreteAggregate는 Aggregate의 API를 실제로 구현한다.
+
+<li>코드 예제</li>
+
+```java
+public interface Iterator {
+    public abstract boolean hasNext();
+
+    public abstract Object next();
+}
+
+public interface Aggregate {
+    public abstract Iterator iterator();
+}
+```
+
+<b>△ 각각 Iterator와 Aggregate 역할을 수행하는 인터페이스.</b>
+
+```java
+public class Student {
+    private String name;
+    private int age;
+
+    public Student(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+}
+
+public class Students implements Aggregate {
+    private Student[] students;
+    private int index = 0;
+
+    public Students(int size) {
+        this.students = new Student[size];
+    }
+
+    public Student getStudent(int index) {
+        return students[index];
+    }
+
+    public void addStudent(Student student) {
+        this.students[index] = student;
+        index++;
+    }
+
+    public void getLength() {
+        return index;
+    }
+
+    public StudentGroupIterator iterator() {
+        return new StudentsIterator(this);
+    }
+}
+```
+
+<b>△ ConcreteAggregate 역할을 수행하는 클래스. Student는 학생을, Students는 학생들의 집합체를 의미한다.</b>
+
+```java
+public class StudentsIterator implements Iterator {
+    private Students students;
+    private int index;
+
+    public StudentsIterator(Students students) {
+        this.students = students;
+        this.index = 0;
+    }
+
+    @Override
+    public boolean hasNext() {
+        if(index < students.getLength())
+            return true;
+        else
+            return false;
+    }
+
+    @Override
+    public Object next() {
+        Student student = students.getStudent(index);
+        index++;
+        return student;
+    }
+}
+```
+
+<b>△ ConcreteIterator 역할을 수행하는 클래스. Students 인덱스를 검사하고 요소를 반환한다.</b>
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        Students students = new Students(5);
+        students.addStudent(new Student("이기택", 27));
+        students.addStudent(new Student("홍길동", 30));
+        students.addStudent(new Student("최민수", 22));
+        students.addStudent(new Student("정성호", 24));
+        students.addStudent(new Student("강호동", 21));
+
+        StudentsIterator iterator = students.iterator();
+
+        while(iterator.hasNext()) {
+            Student student = (Student)iterator.next();
+            System.out.println("Name: " + student.getName());
+            System.out.println("Age: " + student.getAge() + "\n");
+        }
+    }
+}
+```
+
+<b>△ Client 역할을 수행하는 클래스. 학생들을 5명 등록하고 Iterator 패턴을 사용하여 출력한다.</b>
 
 ## 4. 중재자(Mediator)
 
