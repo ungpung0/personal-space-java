@@ -1682,6 +1682,160 @@ public class Main {
 
 ## 4. 중재자(Mediator)
 
+<li>클래스 다이어그램</li>
+
+![classdiagram_mediator](https://user-images.githubusercontent.com/90200010/219844746-db9dbf0b-80ce-48b7-b2f8-fdcd31b73360.svg)
+
+> <b>Mediator(중재자)</b><br>
+> Colleague와 통신 및 조정하는 API를 정의한다.
+
+> <b>ConcreteMediator(구체적인 중재자)</b><br>
+> Mediator의 API를 실제로 구현한다.
+
+> <b>Colleague(동료)</b><br>
+> Mediator와 통신하는 API를 정의한다.
+
+> <b>ConcreteColleague(구체적인 동료)</b><br>
+> Colleague의 API를 실제로 구현한다.
+
+<li>코드 예제</li>
+
+```java
+public abstract class Colleague {
+    private Mediator mediator;
+    protected String name;
+    private String message;
+
+    public Colleague(String name) {
+        this.name = name;
+    }
+
+    public void setMediator(Mediator mediator) {
+        this.mediator = mediator;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getMessage() {
+        return this.message;
+    }
+
+    public void send() {
+        System.out.println(this.name + " send()\n");
+        mediator.mediate(this);
+    }
+
+    public abstract void receive(Colleague colleague);
+}
+```
+
+<b>△ Colleague 역할을 수행하는 추상 클래스. 다른 객체와 Mediator 객체를 통해서 통신을 수행한다.</b>
+
+```java
+public class ConcreteColleague1 extends Colleague {
+    public ConcreteColleague1(String name) {
+        super(name);
+    }
+
+    @Override
+    public void receive(Colleague colleague) {
+        System.out.println(this.name + " received " + colleague.getName() + "'s Message : " + colleague.getMessage());
+    }
+}
+
+public class ConcreteColleague2 extends Colleague {
+    public ConcreteColleague2(String name) {
+        super(name);
+    }
+
+    @Override
+    public void receive(Colleague colleague) {
+        System.out.println("System can't receive messages");
+    }
+}
+
+public class ConcreteColleague3 extends Colleague {
+    public ConcreteColleague3(String name) {
+        super(name);
+    }
+
+    @Override
+    public void receive(Colleague colleague) {
+        System.out.println("Admin can't receive messages");
+    }
+}
+```
+
+<b>△ ConcreteColleague 역할을 수행하는 클래스. Colleague의 receive()를 구현한다.</b>
+
+```java
+public interface Mediator {
+    public void addColleague(Colleague colleague);
+
+    public void mediate(Colleague colleague);
+}
+```
+
+<b>△ Mediator 역할을 수행하는 인터페이스. Colleague의 요청을 처리하는 메서드를 정의한다.</b>
+
+```java
+public class ConcreteMediator implements Mediator {
+    private List<Colleague> colleagueList;
+
+    public ConcreteMediator() {
+        this.colleagueList = new ArrayList<Colleague>();
+    }
+
+    @Override
+    public void addColleague(Colleague colleague) {
+        this.colleagueList.add(colleague);
+    }
+
+    @Override
+    public void mediate(Colleague colleague) {
+        for(Colleague receiverColleague : colleagueList) {
+            System.out.println("\tMediating " + colleague.getName() + " to " receiverColleague.getName());
+            receiverColleague.receive(colleague);
+        }
+    }
+}
+```
+
+<b>△ ConcreteMediator 역할을 수행하는 클래스. Colleague의 요청을 처리하는 메서드를 구현한다.</b>
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        Mediator mediator = new ConcreteMediator();
+        Colleague colleague1 = new ConcreteColleague1("USER1");
+        Colleague colleague2 = new ConcreteColleague1("USER2");
+        Colleague colleague3 = new ConcreteColleague2("SYSTEM");
+        Colleague colleague4 = new ConcreteColleague3("ADMIN");
+
+        colleague1.setMediator(mediator1);
+        colleague2.setMediator(mediator1);
+        colleague3.setMediator(mediator1);
+        colleague4.setMediator(mediator1);
+
+        mediator1.addColleague(colleague1);
+        mediator1.addColleague(colleague2);
+        mediator1.addColleague(colleague3);
+        mediator1.addColleague(colleague4);
+
+        colleague1.setMessage("I'm USER1");
+        colleague1.send();
+    }
+}
+```
+
+<b>△ Client 역할을 수행하는 클래스. Mediator 패턴을 사용하여 채팅을 출력한다.</b>
+
 ## 5. 메멘토(Memento)
 
 ## 6. 옵서버(Observer)
