@@ -1427,6 +1427,125 @@ public class Main {
 
 ## 2. 커맨드(Command)
 
+<b>Command(커맨드)</b> 패턴은 실행할 기능들을 캡슐화하여, 실행을 요청하는 <b>호출자(Invoker)</b>와 실제로 실행하는 <b>수신자(Receiver)</b> 사이의 의존성을 제거한다.
+
+<li>클래스 다이어그램</li>
+
+![classdiagram_command](https://user-images.githubusercontent.com/90200010/219820969-48fe6d89-03fe-445e-9bbf-e8f5dcb446b7.svg)
+
+> <b>Command(명령)</b><br>
+> Command는 실행할 기능에 대한 API를 정의한다.
+
+> <b>ConcreteCommand(구체적인 명령)</b><br>
+> ConcreteCommand는 실제로 실행하는 기능을 구현한다.
+
+> <b>Receiver(수신자)</b><br>
+> Receiver는 Command의 명령을 실제로 실행한다.
+
+> <b>Invoker(호출자)</b><br>
+> Invoker는 Command API를 호출하여 명령을 시작한다.
+
+> <b>Client(사용자)</b><br>
+> Client는 Command 패턴의 프로그램을 실행한다.
+
+<li>코드 예제</li>
+
+```java
+public interface Command {
+    public abstract void execute();
+}
+```
+
+<b>△ Command 역할을 수행하는 인터페이스. Button에 의해서 호출되어 사용될 실행 메서드를 정의한다.</b>
+
+```java
+public class Button {
+    private Command command;
+
+    public Button(Command command) {
+        setCommand(command);
+    }
+
+    public void setCommand(Command command) {
+        this.command = command;
+    }
+
+    public void press() {
+        command.execute();
+    }
+
+}
+```
+
+<b>△ Invoker 역할을 수행하는 클래스. press()가 호출되면 Command.execute()로 명령을 실행한다.</b>
+
+```java
+public class Lamp {
+    public void turnOn() {
+        System.out.println("Lamp On");
+    }
+}
+
+public class Alarm {
+    public void start() {
+        System.out.println("Alarm Start");
+    }
+}
+
+```
+
+<b>△ Receiver 역할을 수행하는 클래스. press()가 호출되면 Command.execute()로 명령을 실행한다.</b>
+
+```java
+public class LampCommand implements Command {
+    private Lamp lamp;
+
+    public LampCommand(Lamp lamp) {
+        this.lamp = lamp;
+    }
+
+    @Override
+    public void execute() {
+        lamp.turnOn();
+    }
+}
+
+public class AlarmCommand implements Command {
+    private Alarm alarm;
+
+    public AlarmCommand(Alarm alarm) {
+        this.alarm = alarm;
+    }
+
+    @Override
+    public void execute() {
+        alarm.start();
+    }
+}
+```
+
+<b>△ ConcreteCommand 역할을 수행하는 클래스. Command를 Lamp, Alarm에 맞게 구현한다.</b>
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        Lamp lamp = new Lamp();
+        Alarm alarm = new Alarm();
+
+        Command lampCommand = new LampCommand(lamp);
+        Command alarmCommand = new AlarmCommand(alarm);
+
+        Button lampButton = new Button(lampCommand);
+        Button alarmButton = new Button(alarmCommand);
+
+        lampButton.press();
+        alarmButton.press();
+    }
+}
+```
+
+<b>△ Client 역할을 수행하는 클래스. Command 패턴을 사용하여 램프와 알람을 작동시킨다.</b>
+
 ## 3. 반복자(Iterator)
 
 ## 4. 중재자(Mediator)
