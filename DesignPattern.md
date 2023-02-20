@@ -1548,6 +1548,8 @@ public class Main {
 
 ## 3. 반복자(Iterator)
 
+<b>Iterator(반복자)</b> 패턴은 객체의 요소에 접근하는 방식을 통일하여 다형적인 코드를 만드는 방법을 제시한다.
+
 <li>클래스 다이어그램</li>
 
 ![classdiagram_iterator](https://user-images.githubusercontent.com/90200010/219827174-4ed55dfc-5546-43aa-9fe5-23b695eb8b00.svg)
@@ -1681,6 +1683,8 @@ public class Main {
 <b>△ Client 역할을 수행하는 클래스. 학생들을 5명 등록하고 Iterator 패턴을 사용하여 출력한다.</b>
 
 ## 4. 중재자(Mediator)
+
+<b>Mediator(중재자)</b> 패턴은 클래스들 간의 복잡한 관계(M:N)를 하나의 클래스에 위임하여, 단순한 관계(M:1) 치환한다. 객체 관계의 종합이 필요할 때 사용한다.
 
 <li>클래스 다이어그램</li>
 
@@ -1845,6 +1849,90 @@ public class Main {
 ## 8. 전략(Strategy)
 
 ## 9. 템플릿 메서드(Template Method)
+
+<b>Template Method(템플릿 메서드)</b>는 상위 클래스에서 전체적인 구조를 정의하고, 하위 클래스에서 구체적으로 구현한다. 코드의 재사용을 통해서 중복을 제거할 수 있다.
+
+<li>클래스 다이어그램</li>
+
+![classdiagram_templatemethod](https://user-images.githubusercontent.com/90200010/220004078-9efc0226-f235-42c1-8537-4a949632e613.svg)
+
+> <b>AbstractClass(추상 클래스)</b><br>
+> AbstractClass는 하위 클래스에서 사용할 공통적인 알고리즘을 정의한다.
+
+> <b>ConcreteClass(구현 클래스)</b><br>
+> ConcreteClass는 AbstractClass를 구체적으로 구현한다.
+
+<li>코드 예제</li>
+
+```java
+public abstract class House {
+    public final void build() {
+        buildFoundation();
+        buildPillars();
+        buildWalls();
+        buildWindows();
+        System.out.println("House Build Complete.");
+    }
+
+    private void buildFoundation() {
+        System.out.println("Foundation: Cement, Iron, Sand");
+    }
+
+    private void buildWindows() {
+        System.out.println("Windows: Glass");
+    }
+
+    public abstract void buildWalls();
+
+    public abstract void buildPillars();
+}
+```
+
+<b>△ AbstractClass 역할을 수행하는 추상 클래스. WoodenHouse, StoneHouse에서 사용할 공통 메서드를 정의한다.</b>
+
+```java
+public class StoneHouse extends House {
+    @Override
+    public void buildWalls() {
+        System.out.println("Walls: Stone");
+    }
+
+    @Override
+    public void buildPillars() {
+        System.out.println("Pillars: Stone");
+    }
+}
+
+public class WoodenHouse extends House {
+    @Override
+    public void buildWalls() {
+        System.out.println("Walls: Wood");
+    }
+
+    @Override
+    public void buildPillars() {
+        System.out.println("Pillars: Wood");
+    }
+}
+```
+
+<b>△ ConcreteClass 역할을 수행하는 클래스. House를 구체적으로 구현한다.</b>
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        House house = new WoodenHouse();
+        house.buildHouse();
+
+        System.out.print("\nWOOD -> STONE\n");
+
+        house = new StoneHouse();
+        house.buildHouse();
+    }
+}
+```
+
+<b>△ Client 역할을 수행하는 클래스. House 인스턴스 WoodenHouse를 StoneHouse로 변경한다.</b>
 
 ## 10. 비지터(Visitor)
 
