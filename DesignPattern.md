@@ -1844,13 +1844,152 @@ public class Main {
 
 ## 6. 옵서버(Observer)
 
+<b>Observer(옵서버)</b> 패턴은 상태 변화가 발생하는 객체에서 관찰 전담 객체에게 콜백(Callback)을 전달하는 방식으로 작동한다.
+
+<li>클래스 다이어그램</li>
+
+![classdiagram_observer](https://user-images.githubusercontent.com/90200010/220333343-bdc4e83d-edf7-42b4-8ce6-132a1a87d3d4.svg)
+
+> <b>Subject(관찰 대상)</b><br>
+> Subject는 상태가 변화하는 관찰 대상을 나타낸다. Observer를 등록 및 삭제하는 메서드와 상태를 가져오는 메서드를 갖는다.
+
+> <b>ConcreteSubject(구체적인 관찰 대상)</b><br>
+> ConcreteSubject는 Subject를 구체적으로 구현한다.
+
+> <b>Observer(관찰자)</b><br>
+> Observer는 Subject로부터 상태 변화 여부를 전달받는다.
+
+> <b>ConcreteObserver(구체적인 관찰자)</b><br>
+> ConcreteObserver는 Observer를 구현하여 상태 변화를 취득한다.
+
+<li>코드 예제</li>
+
+```java
+public interface Publisher {
+    public void addObserver(Observer observer);
+
+    public void deleteObserver(Observer observer);
+
+    public void notifyObservers();
+}
+```
+
+<b>△ Subject 역할을 수행하는 인터페이스. Observer를 추가, 삭제하는 메서드와 Observer에 전달하는 메서드를 정의한다.</b>
+
+```java
+public interface Observer {
+    public void update(boolean play);
+}
+```
+
+<b>△ Observer 역할을 수행하는 인터페이스. 상태 변화를 출력하는 메서드를 정의한다.</b>
+
+```java
+public class PlayController implements Publisher {
+    private List<Observer> observers = new ArrayList<>();
+    private boolean play;
+    private Observer observer;
+
+    @Override
+    public void addObserver(Observer observer) {
+        observers.add(observer);
+    }
+
+    @Override
+    public void deleteObserver(Observer observer) {
+        observers.remove(observer);
+    }
+
+    @Override
+    public void notifyObservers() {
+        for(int i = 0; i < observers.size(); i++)
+            observers.get(i).update(play);
+    }
+
+    public void setPlay(boolean play) {
+        this.play = play;
+        notifyObservers();
+    }
+
+    public boolean getFlag() {
+        return play;
+    }
+}
+```
+
+<b>△ ConcreteSubject 역할을 수행하는 클래스. Observer 리스트를 갖고 Publisher의 메서드를 구현하는데 사용한다.</b>
+
+```java
+public class ObserverA implements Observer {
+    private boolean play;
+    private Publisher publisher;
+
+    public ObserverA(Publisher publisher) {
+        this.publisher = publisher;
+        publisher.addObserver(this);
+    }
+
+    @Override
+    public void update(boolean play) {
+        this.play = play;
+        action();
+    }
+
+    public void action() {
+        if(play)
+            System.out.println("ClassA Working.");
+        else
+            System.out.println("ClassA Stopped.");
+    }
+}
+
+public class ObserverB implements Observer {
+    private boolean play;
+
+    public ObserverB(Publisher publisher) {
+        publisher.addObserver(this);
+    }
+
+    @Override
+    public void update(boolean play) {
+        this.play = play;
+        action();
+    }
+
+    public void action() {
+        if(play)
+            System.out.println("ClassB Working.");
+        else
+            System.out.println("ClassB Stopped.");
+    }
+}
+```
+
+<b>△ ConcreteObserver 역할을 수행하는 클래스. 각각 Observer를 구현한다.</b>
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        PlayController playController = new PlayController();
+        Observer observerA = new ObserverA(playController);
+        Observer observerB = new ObserverB(playController);
+
+        playController.setFlag(true);
+        playController.deleteObserver(observerA);
+        playController.setFlag(false);
+    }
+}
+```
+
+<b>△ Client 역할을 수행하는 클래스. Observer 패턴을 사용하여 상태 변화를 출력한다.</b>
+
 ## 7. 상태(State)
 
 ## 8. 전략(Strategy)
 
 ## 9. 템플릿 메서드(Template Method)
 
-<b>Template Method(템플릿 메서드)</b>는 상위 클래스에서 전체적인 구조를 정의하고, 하위 클래스에서 구체적으로 구현한다. 코드의 재사용을 통해서 중복을 제거할 수 있다.
+<b>Template Method(템플릿 메서드)</b> 패턴은 상위 클래스에서 전체적인 구조를 정의하고, 하위 클래스에서 구체적으로 구현한다. 코드의 재사용을 통해서 중복을 제거할 수 있다.
 
 <li>클래스 다이어그램</li>
 
