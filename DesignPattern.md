@@ -2291,5 +2291,120 @@ public class Main {
 
 ## 10. 비지터(Visitor)
 
----
+<b>Visitor(비지터)</b> 패턴은 데이터 구조를 방문하는 방문자 클래스를 별도로 준비하여 처리를 일임한다. 새로운 처리를 추가하고 싶을 때는 방문자 클래스를 추가한다.
 
+<li>클래스 다이어그램</li>
+
+![classdiagram_visitor](https://user-images.githubusercontent.com/90200010/220537041-b369ff6d-6ffe-45e4-8593-eb2dcfe31d4e.svg)
+
+> <b>Visitor(방문자)</b><br>
+> Visitor는 데이터 구조의 요소를 방문하는 메서드를 정의한다.
+
+> <b>ConcreteVisitor(구체적인 방문자)</b><br>
+> ConcreteVisitor는 Visitor를 구현하여 ConcreteElement를 처리한다.
+
+> <b>Element(요소)</b><br>
+> Element는 요소를 방문할 Visitor를 받아들이는 메서드를 정의한다.
+
+> <b>ConcreteElement(구체적인 요소)</b><br>
+> ConcreteElement는 Element를 실제로 구현한다.
+
+> <b>ObjectStructure(오브젝트 구조)</b><br>
+> ObjectStructure는 Element의 집합을 취급하는 역할을 맡는다.
+
+<li>코드 예제</li>
+
+```java
+public interface Element {
+    public void accept(Visitor visitor);
+}
+```
+
+<b>△ Element 역할을 수행하는 인터페이스. Visitor를 받아들이는 메서드를 정의한다.</b>
+
+```java
+public class Snack implements Element {
+    @Override
+    public void accept(Visitor visitor) {
+        System.out.println("Snack is Ready.");
+        visitor.visit(this);
+    }
+}
+
+public class Milk implements Element {
+    @Override
+    public void accept(Visitor visitor) {
+        System.out.println("Milk is Ready.");
+        visitor.visit(this);
+    }
+}
+```
+
+<b>△ ConcreteElement 역할을 수행하는 클래스. Element를 구현하여 과자와 우유를 나타낸다.</b>
+
+```java
+public class Cart implements Element {
+    List<Element> cart = new ArrayList<>();
+
+    public Cart() {
+        cart.add(new Snack());
+        cart.add(new Milk());
+    }
+
+    @Override
+    public void accept(Visitor visitor) {
+        System.out.println("Cart is Ready.");
+        visitor.visit(this);
+
+        for(Element element : cart)
+            element.accept(visitor);
+    }
+}
+```
+
+<b>△ ObjectStructure 역할을 수행하는 클래스. Element를 구현하여 과자와 우유를 담는 카트를 나타낸다.</b>
+
+```java
+public interface Visitor {
+    public void visit(Cart cart);
+
+    public void visit(Snack snack);
+
+    public void visit(Milk milk);
+}
+```
+
+<b>△ Visitor 역할을 수행하는 인터페이스. Cart, Snack, Milk에 대응하여 방문하는 메서드를 정의한다.</b>
+
+```java
+public class Customer implements Visitor {
+    @Override
+    public void visit(Cart cart) {
+        System.out.println("Using Cart.");
+    }
+
+    @Override
+    public void visit(Snack snack) {
+        System.out.println("Put Snack.");
+    }
+
+    @Override
+    public void visit(Milk milk) {
+        System.out.println("Put Milk.");
+    }
+}
+```
+
+<b>△ ConcreteVisitor 역할을 수행하는 클래스. Visitor를 구현하여 Cart, Snack, Milk를 방문하고 사용하는 손님을 나타낸다.</b>
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        Visitor customer = new Customer();
+        Element cart = new Cart();
+        cart.accept(customer);
+    }
+}
+```
+
+<b>△ Client 역할을 수행하는 클래스. Visitor 패턴으로 과자와 우유를 카트에 담는다.</b>
