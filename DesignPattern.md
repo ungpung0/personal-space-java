@@ -1985,6 +1985,107 @@ public class Main {
 
 ## 7. 상태(State)
 
+<b>State(상태)</b> 패턴은 객체의 상태에 따라서 행위가 달라질 경우, 상태를 별도의 객체에 위임하는 방법을 제시한다.
+
+<li>클래스 다이어그램</li>
+
+![classdiagram_state](https://user-images.githubusercontent.com/90200010/220483113-81b75580-416f-4ae0-b414-3e29ece4b0f1.svg)
+
+> <b>State(상태)</b><br>
+> State는 상태에 의존한 동작을 하는 메서드를 정의한다.
+
+> <b>ConcreteState(구체적인 상태)</b><br>
+> ConcreteState는 State를 구체적으로 구현한다.
+
+> <b>Context(문맥)</b><br>
+> Context는 ConcreteState를 활용하여 사용자에게 필요한 API를 정의한다.
+
+<li>코드 예제</li>
+
+```java
+public interface State {
+    public void insertCoin();
+
+    public void printTicket();
+}
+```
+
+<b>△ State 역할을 수행하는 인터페이스. 동전 상태에 따라서 다르게 작동하는 메서드를 정의한다.</b>
+
+```java
+public class NoCoinState implements State {
+    TicketMachine ticketMachine;
+
+    NoCoinState(TicketMachine ticketMachine) {
+        this.ticketMachine = ticketMachine;
+    }
+
+    @Override
+    public void insertCoin() {
+        ticketMachine.setState(ticketMachine.getCoinState());
+    }
+
+    @Override
+    public void printTicket() {
+        System.out.println("NO COIN. PLEASE INSERT COIN.");
+    }
+}
+
+public class CoinState implements State {
+    private final TicketMachine ticketMachine;
+
+    CoinState(TicketMachine ticketMachine) {
+        this.ticketMachine = ticketMachine;
+    }
+
+    @Override 
+    public void insertCoin() {
+        System.out.println("ALREADY COINS IN IT.");
+    }
+
+    @Override
+    public void printTicket() {
+        TicketPrinter.print();
+        CoinRepository.add(1);
+        ticketMachine.setState(ticketMachine.getNoCoinState());
+    }
+}
+```
+
+<b>△ ConcreteState 역할을 수행하는 클래스. 동전이 있을 때, 없을 때에 따라서 State를 구현한다.</b>
+
+```java
+public class TicketMachine {
+    private final State noCoinState;
+    private final State coinState;
+    private State currentState;
+
+    public TicketMachine() {
+        this.noCoinState = new NoCoinState(this);
+        this.coinState = new CoinState(this);
+        this.currentState = noCoinState;
+    }
+
+    public void insertCoin() {
+        currentState.insertCoin();
+    }
+
+    public void setState(State state) {
+        this.currentState = state;
+    }
+
+    public State getCoinState() {
+        return coinState;
+    }
+
+    public State getNoCoinState() {
+        return noCoinState;
+    }
+}
+```
+
+<b>△ Context 역할을 수행하는 클래스. NoCoinState와 CoinState를 인스턴스로 갖고 활용한다.</b>
+
 ## 8. 전략(Strategy)
 
 ## 9. 템플릿 메서드(Template Method)
