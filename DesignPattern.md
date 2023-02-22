@@ -2088,6 +2088,121 @@ public class TicketMachine {
 
 ## 8. 전략(Strategy)
 
+<b>Strategy(전략)</b> 패턴은 행동을 별도의 클래스로 캡슐화하여 필요할경우, 교체가 가능한 방법을 제시한다.
+
+<li>클래스 다이어그램</li>
+
+![classdiagram_strategy](https://user-images.githubusercontent.com/90200010/220528811-a09c38fd-91e5-4c3a-97e0-0b0c5a539e41.svg)
+
+> <b>Strategy(전략)</b><br>
+> Strategy는 전략을 활용하기 위한 메서드를 정의한다.
+
+> <b>ConcreteStrategy(구체적인 전략)</b><br>
+> ConcreteStrategy는 Strategy의 메서드를 실제로 구현한다.
+
+> <b>Context(문맥)</b><br>
+> Context는 ConcreteStrategy 인스턴스를 갖고 필요에 따라서 활용한다.
+
+<li>코드 예제</li>
+
+```java
+public class Robot {
+    private String name;
+    private MoveStrategy moveStrategy;
+    private AttackStrategy attackStrategy;
+
+    public Robot(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void move() {
+        moveStrategy.move();
+    }
+
+    public void attack() {
+        attackStrategy.attack();
+    }
+
+    public void setMoveStrategy(MoveStrategy moveStrategy) {
+        this.moveStrategy = moveStrategy;
+    }
+
+    public void setAttackStrategy(AttackStrategy attackStrategy) {
+        this.attackStrategy = attackStrategy;
+    }
+}
+```
+
+<b>△ Context 역할을 수행하는 클래스. MoveStrategy와 AttackStrategy 인스턴스를 활용하여 이동 방법, 공격 방법을 설정하는 메서드를 갖는다.</b>
+
+```java
+public interface MoveStrategy {
+    public void move();
+}
+
+public interface AttackStrategy {
+    public void attack();
+}
+```
+
+<b>△ Strategy 역할을 수행하는 인터페이스. 이동, 공격에 대한 메서드를 정의한다.</b>
+
+```java
+public class FlyStrategy implements MoveStrategy {
+    public void move() {
+        System.out.println("Move with Fly.");
+    }
+}
+
+public class WalkStrategy implements MoveStrategy {
+    public void move() {
+        System.out.println("Move with Walk.");
+    }
+}
+
+public class MissileStrategy implements AttackStrategy {
+    public void attack() {
+        System.out.println("Attack with Missile.");
+    }
+}
+
+public class GunStrategy implements AttackStrategy {
+    public void attack() {
+        System.out.println("Attack with Gun.");
+    }
+}
+```
+
+<b>△ ConcreteStrategy 역할을 수행하는 클래스. MoveStrategy와 AttackStrategy를 실제로 구현한다.</b>
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        Robot heavyBot = new Robot("HEAVYBOT");
+        Robot lightBot = new Robot("LIGHTBOT");
+
+        heavyBot.setMoveStrategy(new WalkStrategy());
+        heavyBot.setAttackStrategy(new MissileStrategy());
+        lightBot.setMoveStrategy(new FlyStrategy());
+        lightBot.setAttackStrategy(new GunStrategy());
+
+        System.out.println("Your Robot: " + heavyBot.getName());
+        System.out.println("Move: " + heavyBot.move());
+        System.out.println("Attack: " + heavyBot.attack() + "\n");
+
+        System.out.println("Your Robot is " + lightBot.getName());
+        System.out.println("Move: " + lightBot.move());
+        System.out.println("Attack: " + lightBot.attack());
+    }
+}
+```
+
+<b>△ Client 역할을 수행하는 클래스. Strategy 패턴을 사용하여 로봇의 공격방법과 이동방법을 설정하고 출력한다.</b>
+
 ## 9. 템플릿 메서드(Template Method)
 
 <b>Template Method(템플릿 메서드)</b> 패턴은 상위 클래스에서 전체적인 구조를 정의하고, 하위 클래스에서 구체적으로 구현한다. 코드의 재사용을 통해서 중복을 제거할 수 있다.
