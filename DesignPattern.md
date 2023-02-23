@@ -1842,6 +1842,125 @@ public class Main {
 
 ## 5. 메멘토(Memento)
 
+<b>Memento(메멘토)</b> 패턴은 객체의 상태값을 저장하고 사용자의 필요에 따라서 복원할 공간을 마련하는 패턴을 의미한다.
+
+<li>클래스 다이어그램</li>
+
+![classdiagram_memento](https://user-images.githubusercontent.com/90200010/220792537-3e4d9f75-a34d-4f99-80ae-8ee344a53d30.svg)
+
+> <b>Originator(작성자)</b><br>
+> Originator는 현재 상태를 저장하고 싶을 때 Memento를 생성하고, 되돌리고 싶을 때 이전 Memento를 활용한다.
+
+> <b>Memento(기념품)</b><br>
+> Memento는 Originator의 내부 정보를 정리한다. 이전 상태로 되돌릴 때 사용하는 WideInterface(넓은 API), 외부의 통로로 사용하는 NarrowInterface(좁은 API)의 2 종류의 API를 제공한다.
+
+> <b>Caretaker(관리인)</b><br>
+> Caretaker는 Memento가 필요할 때 Originator에 요청을 한다.
+
+<li>코드 예제</li>
+
+```java
+public class Information {
+    private String dataStr;
+    private int dataInt;
+
+    public Information(String dataStr, int dataInt) {
+        this.dataStr = dataStr;
+        this.dataInt = dataInt;
+    }
+
+    public Memento createMemento() {
+        return new Memento(this.dataStr, this.dataInt);
+    }
+
+    public void RestoreMemento() {
+        this.dataStr = memento.getDataString();
+        this.dataInt = memento.getDataInteger();
+    }
+
+    public void setDataString(String dataStr) {
+        this.dataStr = dataStr;
+    }
+
+    public void setDataInteger(int dataInt) {
+        this.dataInt = dataInt;
+    }
+
+    public String getDataString() {
+        return this.dataStr;
+    }
+
+    public int getDataInteger() {
+        return this.dataInt;
+    }
+}
+```
+
+<b>△ Originator 역할을 수행하는 클래스. 문자열 데이터, 정수형 데이터에 대해서 Getter/Setter 메서드와 Memento를 호출하는 메서드를 갖는다.</b>
+
+```java
+public class Memento {
+    private String dataStr;
+    private int dataInt;
+
+    public Memento(String dataStr, int dataInt) {
+        this.dataStr = dataStr;
+        this.dataInt = dataInt;
+    }
+
+    public String getDataString() {
+        return this.dataStr;
+    }
+
+    public int getDataInteger() {
+        return this.dataInt;
+    }
+}
+```
+
+<b>△ Memento 역할을 수행하는 클래스. 문자열 데이터, 정수형 데이터에 대해서 Getter/Setter 메서드를 갖는다.</b>
+
+```java
+public class Caretaker {
+    Stack<Memento> mementos = new Stack<>();
+
+    public void push(Memento memento) {
+        mementos.push(memento);
+    }
+
+    public Memento pop() {
+        return mementos.pop();
+    }
+}
+```
+
+<b>△ Caretaker 역할을 수행하는 클래스. Memento를 Stack에 저장하여 Push/Pop을 수행하는 메서드를 갖는다.</b>
+
+```java
+public class User {
+    Information information;
+    Caretaker caretaker;
+
+    public void execute() {
+        information = new Information("Data1", 10);
+        caretaker = new Caretaker();
+
+        caretaker.push(information.createMemento());
+        information.setDataString("Data2");
+        information.setDataInteger(20);
+
+        System.out.println("Current String Data: " + information.getDataString());
+        System.out.println("Current Integer Data: " + information.getDataInteger());
+
+        information.restoreMemento(caretaker.pop());
+        System.out.println("Current String Data: " + information.getDataString());
+        System.out.println("Current Integer Data: " + information.getDataInteger());
+    }
+}
+```
+
+<b>△ 문자열 데이터, 정수형 데이터를 Memento 패턴을 활용하여 저장하고 되돌리기를 수행하는 메서드를 갖는다.</b>
+
 ## 6. 옵서버(Observer)
 
 <b>Observer(옵서버)</b> 패턴은 상태 변화가 발생하는 객체에서 관찰 전담 객체에게 콜백(Callback)을 전달하는 방식으로 작동한다.
